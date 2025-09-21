@@ -21,5 +21,5 @@ fi
 echo "$(date): Updating portfolio data..."
 cd $PORTFOLIO_DIR
 source venv/bin/activate
-python3 portfolio_app.py > portfolio_data.txt 2>&1
+python3 portfolio_web_clean.py > portfolio_data.txt 2>&1
 echo "$(date): Portfolio data updated"
