@@ -139,10 +139,10 @@ Loading portfolio data...
         // Set current timestamp
         document.getElementById('timestamp').textContent = new Date().toLocaleTimeString();
         
-        // Auto-refresh every 5 minutes
+        // Auto-refresh every 1 minute
         setTimeout(function() {
             location.reload();
-        }, 300000);
+        }, 60000);
 
         // Add pull-to-refresh functionality for mobile
         let startY = 0;
