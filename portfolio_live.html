@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Crypto Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .total-value {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+        }
+
+        .total-value h2 {
+            color: #333;
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+        }
+
+        .total-value .amount {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #2c3e50;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .portfolio-output {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            font-family: 'Courier New', monospace;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            overflow-x: auto;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .refresh-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+
+        .refresh-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .last-updated {
+            text-align: center;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .total-value .amount {
+                font-size: 2.5rem;
+            }
+            
+            .portfolio-output {
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 My Portfolio</h1>
+            <div class="last-updated">Last updated: <span id="timestamp"></span></div>
+        </div>
+
+        <div class="total-value">
+            <h2>Total Portfolio Value</h2>
+            <div class="amount" id="totalValue">Loading...</div>
+        </div>
+
+        <div class="portfolio-output" id="portfolioData">
+Loading portfolio data...
+        </div>
+    </div>
+
+    <button class="refresh-btn" onclick="location.reload()" title="Refresh Portfolio">
+        🔄
+    </button>
+
+    <script>
+        // Set current timestamp
+        document.getElementById('timestamp').textContent = new Date().toLocaleTimeString();
+        
+        // Auto-refresh every 5 minutes
+        setTimeout(function() {
+            location.reload();
+        }, 300000);
+
+        // Add pull-to-refresh functionality for mobile
+        let startY = 0;
+        let currentY = 0;
+        let isRefreshing = false;
+
+        document.addEventListener('touchstart', function(e) {
+            if (window.scrollY === 0) {
+                startY = e.touches[0].clientY;
+            }
+        });
+
+        document.addEventListener('touchmove', function(e) {
+            if (window.scrollY === 0 && !isRefreshing) {
+                currentY = e.touches[0].clientY;
+                if (currentY - startY > 100) {
+                    location.reload();
+                    isRefreshing = true;
+                }
+            }
+        });
+
+        document.addEventListener('touchend', function() {
+            isRefreshing = false;
+        });
+
+        // Load live portfolio data
+        fetch('/portfolio_data.txt')
+            .then(response => response.text())
+            .then(data => {
+                // Extract total value
+                const totalMatch = data.match(/Total Portfolio Value: \$([0-9,]+\.?[0-9]*)/);
+                if (totalMatch) {
+                    document.getElementById('totalValue').textContent = '$' + totalMatch[1];
+                }
+                
+                // Display portfolio data
+                document.getElementById('portfolioData').textContent = data;
+            })
+            .catch(error => {
+                console.error('Error loading portfolio data:', error);
+                document.getElementById('portfolioData').textContent = 'Error loading portfolio data. Please refresh the page.';
+            });
+    </script>
+</body>
+</html>
