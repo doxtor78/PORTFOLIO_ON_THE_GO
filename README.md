@@ -52,7 +52,13 @@ sudo python3 -m http.server 80 --directory /home/ubuntu/PORTFOLIO_ON_THE_GO
 python3 static_portfolio.py
 ```
 
-### 5. Access from Mobile
+### 5. Set Up Automatic Updates (Recommended)
+```bash
+# Run the keep-alive setup script
+./setup_keepalive.sh
+```
+
+### 6. Access from Mobile
 Open your mobile browser and navigate to:
 ```
 http://YOUR_SERVER_IP/portfolio.html
@@ -65,6 +71,8 @@ PORTFOLIO_ON_THE_GO/
 ├── portfolio_app.py          # Main portfolio fetching script
 ├── portfolio.html            # Mobile-optimized web interface
 ├── static_portfolio.py       # Flask web server (alternative)
+├── keep_alive.sh             # Automatic web server monitoring
+├── setup_keepalive.sh        # Keep-alive system setup script
 ├── requirements.txt          # Python dependencies
 ├── scripts/                  # Exchange-specific balance scripts
 │   ├── binance_balances.py
